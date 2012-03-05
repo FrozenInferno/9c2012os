@@ -1,8 +1,9 @@
+#include "freqSet.h"
+#include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<ctype.h>
-
-#define NoOfTempRecords 1000
+#include<unistd.h>
 
 float ExtractMemClk()
 {
@@ -28,7 +29,7 @@ float ExtractMemClk()
     exit(0);
   }
   
-  for(i = 0, j = 0; i < sizeof(tempChar1) ; i++ )	//extract only the digits and ignore the unit and whitespaces(C)
+  for(i = 0, j = 0; i < strlen(tempChar1) ; i++ )	//extract only the digits and ignore the unit and whitespaces(C)
   {
     if(isdigit(tempChar1[i]) || tempChar1[i] == '.')
       tempChar2[j++] = tempChar1[i];
@@ -88,22 +89,14 @@ void setFreq(int SMFreq, int memFreq)
   system(cmd);
 }
 
-int main(int argc, char **argv)
+void logFreq(int SMFreq, int memFreq)
 {
   FILE *CoreLog, *MemLog;
   char cmd[1000];
   float coreClk,memClk;
   int i;
   
-  if(argc != 2)
-  {
-    printf("Incorrect data..!!");
-    return 0;
-  }
-
-  system("rm CoreLog.dat > dev/null 2>&1");
-  system("rm MemLog.dat > dev/null 2>&1");
-  setFreq(atoi(argv[1]),atoi(argv[2]));
+  setFreq(SMFreq,memFreq);
   
   for(i = 0 ; i < 3 ; i++)
   {
@@ -124,14 +117,26 @@ int main(int argc, char **argv)
     fclose(MemLog);
     fclose(CoreLog);
     
-    sprintf(cmd,"cat CoreLog.dat | tail -n %d > CoreLog.dat",NoOfTempRecords);
+    sprintf(cmd,"cat CoreLog.dat | tail -n %d > CreLog.dat && rm CoreLog.dat && mv CreLog.dat CoreLog.dat",NoOfTempRecords);
     system(cmd);					//Trim the log file to size
     
-    sprintf(cmd,"cat MemLog.dat | tail -n %d > MemLog.dat",NoOfTempRecords);
-    system(cmd);					//Trim the log file to sizeof
+    sprintf(cmd,"cat MemLog.dat | tail -n %d > MmLog.dat && rm MemLog.dat && mv MmLog.dat MemLog.dat",NoOfTempRecords);
+    system(cmd);					//Trim th.date log file to sizeof
     
     sleep(10);
   }
   system("nvclock -r");	//reset to the default values.. This is only for testing purposes and must be removed later..
-  return(0);
+  
 }
+
+// int main(int argc, char **argv)
+// {
+//     if(argc != 2)
+//     {
+//       printf("Incorrect data..!!");
+//       return 0;
+//     }
+// 
+//   logFreq(atoi(argv[1]),atoi(argv[2]));
+//   return 0;
+// }

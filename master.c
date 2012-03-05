@@ -1,23 +1,30 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include "freqSet.h"
+#include "loadExtractn.h"
+#include "tempExtractn.h"
+
+extern void logLoad();
+extern void logTemperature();
 
 void *tmpThread()
 {
-  system("./tempExtractn");
+  logTemperature();
 }
 
 void *utilThread()
 {
-  system("./loadExtractn");
+  logLoad();
 }
 
-void main()
+int main()
 {
   int i;
   pthread_t temperatureThread,utilizationThread;
   
-  for(i = 0 ; i < 10 ; i++)
+  for(i = 0 ; i < 120 ; i++)
   {
   pthread_create(&temperatureThread,NULL,tmpThread,NULL);
   pthread_create(&utilizationThread,NULL,utilThread,NULL);
@@ -25,6 +32,7 @@ void main()
   pthread_join(temperatureThread,NULL);
   pthread_join(utilizationThread,NULL);
   
-  sleep(300);
+  sleep(1);
   }
+  return 0;
 }
