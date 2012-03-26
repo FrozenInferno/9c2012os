@@ -1,6 +1,7 @@
 #include "fileop.h"
 #include <stdio.h>
 #include <string.h>
+
 char automatic[] ="mode:auto";
 char manual[] = "mode:manual";
 char freq100[]="frequency:100";
