@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include "governor.h"
-
+#include "fileop.h"
 GtkWidget *radiobutton1, *radiobutton2,*radiobutton3,*radiobutton4,*radiobutton5,*radiobutton6;
 GtkWidget *hseparator;
 void closeApp ( GtkWidget *window, gpointer data)
@@ -33,6 +33,7 @@ void radio_button_clicked1(GtkWidget *button, gpointer data)
 	{
 	  printf("Button1 %i \t",active);
 	  setFreq(100);
+	 set100();
 	}
 }
 
@@ -43,6 +44,7 @@ void radio_button_clicked2(GtkWidget *button, gpointer data)
 	{
 	  printf("Button2 %i \t",active);
 	  setFreq(75);
+set75();
 	}
 }
 
@@ -53,6 +55,7 @@ void radio_button_clicked3(GtkWidget *button, gpointer data)
 	{
 	  printf("Button3 %i \t",active);
 	  setFreq(50);
+ set50();
 	}
 }
 
@@ -62,7 +65,7 @@ void radio_button_clicked4(GtkWidget *button, gpointer data)
 	if(active)
 	{
 	  printf("Button4 %i \t",active);
-	  setFreq(33);
+set33();
 	}
 }
 void radio_button_clicked5(GtkWidget *button, gpointer data)
@@ -72,8 +75,10 @@ void radio_button_clicked5(GtkWidget *button, gpointer data)
 	{
 	  printf("Button5 %i \t",active);
 	  onDemand();
+		setAuto();
 	}
 }
+/*
 void radio_button_clicked6(GtkWidget *button, gpointer data)
 {
   gboolean active = gtk_toggle_button_get_active(radiobutton6);
@@ -83,7 +88,7 @@ void radio_button_clicked6(GtkWidget *button, gpointer data)
 	  powerSaver();
 	}
 }
-
+*/
 
 gint main (gint argc, gchar *argv[])
 {
@@ -92,14 +97,16 @@ gint main (gint argc, gchar *argv[])
   GtkWidget *vbox;
 
   gtk_init (&argc, &argv);
+ set100();
   //window = gtk_window_new(GTK_WINDOW_POPUP);
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_default_size(GTK_WINDOW(window),200,200);
- gtk_window_set_resizable(GTK_WINDOW(window), FALSE);  
-gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
+ gtk_window_set_resizable(GTK_WINDOW(window),TRUE);  
+gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_NONE);
 gtk_window_set_title(GTK_WINDOW(window),"GPU FS");  
   g_signal_connect ( G_OBJECT (window), "destroy",
                        G_CALLBACK (closeApp), NULL);
+
 
 
   radiobutton1 = gtk_radio_button_new(NULL);
@@ -107,7 +114,7 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
   radiobutton3 = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(radiobutton1));
   radiobutton4 = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(radiobutton1));
   radiobutton5 = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(radiobutton1));
-  radiobutton6 = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(radiobutton1));
+  //radiobutton6 = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(radiobutton1));
  hseparator=gtk_hseparator_new ();
 
   vbox = gtk_vbox_new (TRUE, 4); 
@@ -118,7 +125,7 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
   add_widget_with_label (GTK_CONTAINER(vbox), "33%:", radiobutton4);
   add_widget_with_label (GTK_CONTAINER(vbox), NULL, hseparator);
   add_widget_with_label (GTK_CONTAINER(vbox), "Auto:", radiobutton5);
-  add_widget_with_label (GTK_CONTAINER(vbox), "PowerSaver:", radiobutton6);
+  //add_widget_with_label (GTK_CONTAINER(vbox), "PowerSaver:", radiobutton6);
  
   g_signal_connect(G_OBJECT(radiobutton1), "toggled", 
                      G_CALLBACK(radio_button_clicked1), NULL);
@@ -130,14 +137,14 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
                      G_CALLBACK(radio_button_clicked4), NULL);
   g_signal_connect(G_OBJECT(radiobutton5), "toggled", 
                      G_CALLBACK(radio_button_clicked5), NULL);
-  g_signal_connect(G_OBJECT(radiobutton6), "toggled", 
-                     G_CALLBACK(radio_button_clicked6), NULL);
+  //g_signal_connect(G_OBJECT(radiobutton6), "toggled", 
+   //                  G_CALLBACK(radio_button_clicked6), NULL);
 
 	
   gtk_container_add(GTK_CONTAINER(window), vbox);		
   gtk_widget_show_all(window);
   gtk_main ();
-	
+		
   return 0;
 }
 
