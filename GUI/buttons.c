@@ -65,6 +65,7 @@ void radio_button_clicked4(GtkWidget *button, gpointer data)
 	if(active)
 	{
 	  printf("Button4 %i \t",active);
+setFreq(33);
 set33();
 	}
 }
