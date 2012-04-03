@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-char automatic[] ="mode:auto";
-char manual[] = "mode:manual";
+char automatic[] ="mode:1";
+char manual[] = "mode:0";
 char freq100[]="frequency:100";
 char freq75[]="frequency:75";
 char freq50[]="frequency:50";
