@@ -25,15 +25,14 @@ gtk_container_add(GTK_CONTAINER (hbox), widget);
   gtk_container_add(box, hbox);
 }
 
-
 void radio_button_clicked1(GtkWidget *button, gpointer data)
 {
   gboolean active = gtk_toggle_button_get_active(radiobutton1);
 	if(active)
 	{
 	  printf("Button1 %i \t",active);
-	  setFreq(100);
-	 set100();
+	  onDemand();
+		setAuto();
 	}
 }
 
@@ -43,8 +42,8 @@ void radio_button_clicked2(GtkWidget *button, gpointer data)
 	if(active)
 	{
 	  printf("Button2 %i \t",active);
-	  setFreq(75);
-set75();
+	  setFreq(100);
+	 set100();
 	}
 }
 
@@ -54,8 +53,8 @@ void radio_button_clicked3(GtkWidget *button, gpointer data)
 	if(active)
 	{
 	  printf("Button3 %i \t",active);
-	  setFreq(50);
- set50();
+	  setFreq(75);
+set75();
 	}
 }
 
@@ -65,20 +64,22 @@ void radio_button_clicked4(GtkWidget *button, gpointer data)
 	if(active)
 	{
 	  printf("Button4 %i \t",active);
-setFreq(33);
-set33();
+	  setFreq(50);
+ set50();
 	}
 }
+
 void radio_button_clicked5(GtkWidget *button, gpointer data)
 {
   gboolean active = gtk_toggle_button_get_active(radiobutton5);
 	if(active)
 	{
 	  printf("Button5 %i \t",active);
-	  onDemand();
-		setAuto();
+setFreq(33);
+set33();
 	}
 }
+
 /*
 void radio_button_clicked6(GtkWidget *button, gpointer data)
 {
@@ -98,7 +99,7 @@ gint main (gint argc, gchar *argv[])
   GtkWidget *vbox;
 
   gtk_init (&argc, &argv);
- set100();
+setAuto();
   //window = gtk_window_new(GTK_WINDOW_POPUP);
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_default_size(GTK_WINDOW(window),200,200);
@@ -119,13 +120,14 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
  hseparator=gtk_hseparator_new ();
 
   vbox = gtk_vbox_new (TRUE, 4); 
- 
-  add_widget_with_label (GTK_CONTAINER(vbox), "100%:",radiobutton1);
-  add_widget_with_label (GTK_CONTAINER(vbox), "75%:", radiobutton2);
-  add_widget_with_label (GTK_CONTAINER(vbox), "50%:", radiobutton3);
-  add_widget_with_label (GTK_CONTAINER(vbox), "33%:", radiobutton4);
+  add_widget_with_label (GTK_CONTAINER(vbox), "Auto:", radiobutton1);
   add_widget_with_label (GTK_CONTAINER(vbox), NULL, hseparator);
-  add_widget_with_label (GTK_CONTAINER(vbox), "Auto:", radiobutton5);
+  add_widget_with_label (GTK_CONTAINER(vbox), "100%:",radiobutton2);
+  add_widget_with_label (GTK_CONTAINER(vbox), "75%:", radiobutton3);
+  add_widget_with_label (GTK_CONTAINER(vbox), "50%:", radiobutton4);
+  add_widget_with_label (GTK_CONTAINER(vbox), "33%:", radiobutton5);
+
+
   //add_widget_with_label (GTK_CONTAINER(vbox), "PowerSaver:", radiobutton6);
  
   g_signal_connect(G_OBJECT(radiobutton1), "toggled", 
