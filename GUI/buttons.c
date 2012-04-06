@@ -1,9 +1,41 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <pthread.h>
+#include <stdlib.h>
 #include "governor.h"
 #include "fileop.h"
+
 GtkWidget *radiobutton1, *radiobutton2,*radiobutton3,*radiobutton4,*radiobutton5,*radiobutton6;
-GtkWidget *hseparator;
+GtkWidget *hseparator,*label1,*label2;
+int flag;
+
+void *readAndDisplay()
+{
+	FILE *fp;
+	char c1[20];
+	int turn=1;
+	while(flag){
+	fp=fopen("display.txt","r");
+	while(fgets(c1,sizeof(c1),fp)!=NULL)
+	{
+		if(turn==1)
+				{	
+					gtk_label_set_text (label1,c1);	
+					turn=2;		
+				}	
+				else
+				{
+					gtk_label_set_text (label2,c1);	
+					turn=1;		
+				}
+
+
+	}
+fclose(fp);
+sleep(1);
+}
+}
+
 void closeApp ( GtkWidget *window, gpointer data)
 {
   gtk_main_quit();
@@ -16,7 +48,7 @@ void add_widget_with_label ( GtkContainer * box, gchar * caption, GtkWidget * wi
 //gtk_misc_set_alignment (widget,1,0.5);
 gtk_misc_set_alignment (label,1,0.5);
 //gtk_alignment_set_padding (widget,0,4,0,0);
- GtkWidget *hbox = gtk_hbox_new (TRUE, 2);
+ GtkWidget *hbox = gtk_hbox_new (TRUE, 1);
   gtk_container_add(GTK_CONTAINER (hbox), label);
 gtk_container_add(GTK_CONTAINER (hbox), widget);
 
@@ -24,6 +56,17 @@ gtk_container_add(GTK_CONTAINER (hbox), widget);
  
   gtk_container_add(box, hbox);
 }
+
+void add_widget_without_label ( GtkContainer * box, GtkWidget * widget)
+{
+
+gtk_misc_set_alignment (widget,0.5,0.5);
+GtkWidget *hbox = gtk_hbox_new (TRUE,1);
+gtk_container_add(GTK_CONTAINER (hbox), widget);
+gtk_container_add(box, hbox);
+
+}
+
 
 void radio_button_clicked1(GtkWidget *button, gpointer data)
 {
@@ -97,6 +140,9 @@ gint main (gint argc, gchar *argv[])
   GtkWidget *window;
   GtkWidget *button;       
   GtkWidget *vbox;
+  pthread_t thread1;
+	int iret;
+
 
   gtk_init (&argc, &argv);
 setAuto();
@@ -118,6 +164,8 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
   radiobutton5 = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(radiobutton1));
   //radiobutton6 = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(radiobutton1));
  hseparator=gtk_hseparator_new ();
+label1 =gtk_label_new(NULL);
+label2 =gtk_label_new(NULL); 
 
   vbox = gtk_vbox_new (TRUE, 4); 
   add_widget_with_label (GTK_CONTAINER(vbox), "Auto:", radiobutton1);
@@ -125,8 +173,9 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
   add_widget_with_label (GTK_CONTAINER(vbox), "100%:",radiobutton2);
   add_widget_with_label (GTK_CONTAINER(vbox), "75%:", radiobutton3);
   add_widget_with_label (GTK_CONTAINER(vbox), "50%:", radiobutton4);
-  add_widget_with_label (GTK_CONTAINER(vbox), "33%:", radiobutton5);
-
+  add_widget_with_label (GTK_CONTAINER(vbox), "33%:", radiobutton5);//
+  add_widget_without_label (GTK_CONTAINER(vbox),label1);
+  add_widget_without_label (GTK_CONTAINER(vbox),label2);
 
   //add_widget_with_label (GTK_CONTAINER(vbox), "PowerSaver:", radiobutton6);
  
@@ -146,8 +195,11 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
 	
   gtk_container_add(GTK_CONTAINER(window), vbox);		
   gtk_widget_show_all(window);
+flag=1;
+iret = pthread_create( &thread1, NULL, readAndDisplay, NULL);
   gtk_main ();
-		
+  flag = 0;
+ pthread_join( thread1, NULL);		
   return 0;
 }
 
