@@ -1,0 +1,3 @@
+GPU Load : 67%
+Temperature : 89 c
+Frequency: 350 MHz

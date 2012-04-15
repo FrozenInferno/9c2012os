@@ -1,0 +1,3 @@
+GPU Load : 12 %
+Temperature : 70 C
+Frequency: 288 MHz
