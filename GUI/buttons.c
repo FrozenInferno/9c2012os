@@ -6,34 +6,54 @@
 #include "fileop.h"
 
 GtkWidget *radiobutton1, *radiobutton2,*radiobutton3,*radiobutton4,*radiobutton5,*radiobutton6;
-GtkWidget *hseparator,*label1,*label2;
+GtkWidget *hseparator,*label1,*label2,*label3;
 int flag;
 
 void *readAndDisplay()
 {
 	FILE *fp;
-	char c1[20];
+	char c1[40];
+ 	char error1[]="File Not Found";
+ 	char error2[]="Restart or Wait";
 	int turn=1;
-	while(flag){
-	fp=fopen("display.txt","r");
-	while(fgets(c1,sizeof(c1),fp)!=NULL)
+	while(flag)
 	{
-		if(turn==1)
-				{	
-					gtk_label_set_text (label1,c1);	
-					turn=2;		
-				}	
-				else
+		if((fp=fopen("display.txt","r"))!=NULL)
+			{
+				while(fgets(c1,sizeof(c1),fp)!=NULL)
 				{
-					gtk_label_set_text (label2,c1);	
-					turn=1;		
-				}
+					if(turn==1)
+						{	
+							gtk_label_set_text (label1,c1);	
+							//turn=2;		
+						}	
+					else if(turn==2)
+						{
+							gtk_label_set_text (label2,c1);	
+							//turn=3;		
+						}
+					else if(turn==3)
+						{
+							gtk_label_set_text (label3,c1);	
+							//turn=3;		
+						}
+					turn++;
+					if(turn==4){turn=1;}	
 
+
+				}
+					fclose(fp);
+					sleep(1);
+			}
+		else
+			{	
+				gtk_label_set_text (label1,error1);
+				gtk_label_set_text (label2,error2);
+				gtk_label_set_text (label3,"");
+				sleep(1);	
+			}
 
 	}
-fclose(fp);
-sleep(1);
-}
 }
 
 void closeApp ( GtkWidget *window, gpointer data)
@@ -73,8 +93,8 @@ void radio_button_clicked1(GtkWidget *button, gpointer data)
   gboolean active = gtk_toggle_button_get_active(radiobutton1);
 	if(active)
 	{
-	  printf("Button1 %i \t",active);
-	  onDemand();
+	 // printf("Button1 %i \t",active);
+	 // onDemand();
 		setAuto();
 	}
 }
@@ -84,9 +104,9 @@ void radio_button_clicked2(GtkWidget *button, gpointer data)
   gboolean active = gtk_toggle_button_get_active(radiobutton2);
 	if(active)
 	{
-	  printf("Button2 %i \t",active);
-	  setFreq(100);
-	 set100();
+	  //printf("Button2 %i \t",active);
+	  //setFreq(100);
+	  set100();
 	}
 }
 
@@ -95,8 +115,8 @@ void radio_button_clicked3(GtkWidget *button, gpointer data)
   gboolean active = gtk_toggle_button_get_active(radiobutton3);
 	if(active)
 	{
-	  printf("Button3 %i \t",active);
-	  setFreq(75);
+	  //printf("Button3 %i \t",active);
+	  //setFreq(75);
 set75();
 	}
 }
@@ -106,8 +126,8 @@ void radio_button_clicked4(GtkWidget *button, gpointer data)
   gboolean active = gtk_toggle_button_get_active(radiobutton4);
 	if(active)
 	{
-	  printf("Button4 %i \t",active);
-	  setFreq(50);
+	  //printf("Button4 %i \t",active);
+	  //setFreq(50);
  set50();
 	}
 }
@@ -117,8 +137,8 @@ void radio_button_clicked5(GtkWidget *button, gpointer data)
   gboolean active = gtk_toggle_button_get_active(radiobutton5);
 	if(active)
 	{
-	  printf("Button5 %i \t",active);
-setFreq(33);
+	 // printf("Button5 %i \t",active);
+//setFreq(33);
 set33();
 	}
 }
@@ -166,6 +186,7 @@ gtk_window_set_title(GTK_WINDOW(window),"GPU FS");
  hseparator=gtk_hseparator_new ();
 label1 =gtk_label_new(NULL);
 label2 =gtk_label_new(NULL); 
+label3 =gtk_label_new(NULL);
 
   vbox = gtk_vbox_new (TRUE, 4); 
   add_widget_with_label (GTK_CONTAINER(vbox), "Auto:", radiobutton1);
@@ -176,6 +197,7 @@ label2 =gtk_label_new(NULL);
   add_widget_with_label (GTK_CONTAINER(vbox), "33%:", radiobutton5);//
   add_widget_without_label (GTK_CONTAINER(vbox),label1);
   add_widget_without_label (GTK_CONTAINER(vbox),label2);
+  add_widget_without_label (GTK_CONTAINER(vbox),label3);
 
   //add_widget_with_label (GTK_CONTAINER(vbox), "PowerSaver:", radiobutton6);
  
@@ -199,7 +221,8 @@ flag=1;
 iret = pthread_create( &thread1, NULL, readAndDisplay, NULL);
   gtk_main ();
   flag = 0;
- pthread_join( thread1, NULL);		
+ pthread_join( thread1, NULL);	
+system("killall master");	
   return 0;
 }
 

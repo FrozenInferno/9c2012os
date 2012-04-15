@@ -3,6 +3,8 @@
 
 #define NoOfTempRecords 200
 
-void logFreq(int SMFreq, int memFreq);
+int extractCurrentFrequency();
+
+void logFreq(int SMFreq);
 
 #endif
